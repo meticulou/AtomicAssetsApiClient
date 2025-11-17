@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 
 namespace AtomicAssetsApiClient.Assets
 {
@@ -61,7 +62,26 @@ namespace AtomicAssetsApiClient.Assets
         /* Declaring a private variable called _sort. */
         private string _sort;
 
+        /* A list that stores immutable properties as key value pairs */
+        private readonly List<KeyValuePair<string, string>> _immutableProperties = new List<KeyValuePair<string, string>>();
 
+
+        /// <summary>
+        /// `WithImmutableProperty` adds a key value pair to the immutable properties list
+        /// </summary>
+        /// <param name="key">The key parameter is the immutable property name to filter on</param>
+        /// <param name="value">The value parameter is the immutable property value to filter on</param>
+        /// <returns>
+        /// The AssetsUriParameterBuilder object.
+        /// </returns>
+        public AssetsUriParameterBuilder WithImmutableProperty(string key, object value)
+        {
+            string val = value?.ToString() ?? string.Empty;
+            _immutableProperties.Add(new KeyValuePair<string, string>(key, val));
+            return this;
+        }
+
+        
         /// <summary>
         /// `WithOwner` sets the `owner` parameter
         /// </summary>
@@ -442,6 +462,11 @@ namespace AtomicAssetsApiClient.Assets
             if (!string.IsNullOrEmpty(_schemaName))
             {
                 parameterString.Append($"&schema_name={_schemaName}");
+            }
+
+            foreach (var prop in _immutableProperties)
+            {
+                parameterString.Append($"&immutable_data.{prop.Key}={prop.Value}");
             }
 
             return parameterString.ToString();
