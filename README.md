@@ -1,9 +1,5 @@
-<div align="center">
- <img src="https://avatars.githubusercontent.com/u/82725791?s=200&v=4" align="center"
-     alt="Liquiid logo" width="280" height="300">
-</div>
-
----
+### This is a fork from liquiidio's AtomicAssetsApiClient (https://github.com/liquiidio/AtomicAssetsApiClient)
+I just added immutable properties filtering to the Api Factory, some more API URLs, and some documentation.
 
 # AtomicAssetsApiClient
 
@@ -14,6 +10,21 @@
  The entry point to the APIs is in the AtomicAssetsApiFactory. You can initialise any supported API from there.
  You can then call any endpoint from the initialised API.
  Each endpoint has its own set of parameters that you may build up and pass in to the relevant function.
+ 
+ ```csharp
+ var assetsApi = AtomicAssetsApiFactory.MainNet1.AssetsApi;
+  
+ or
+ 
+ var assetsApi = AtomicAssetsApiFactory.TestNet2.AssetsApi;
+ 
+ NOTES:
+ MainNet1 => AtomicAssetsIO
+ MainNet2 => EOSAmsterdam
+ MainNet3 => EOSAuthority
+ TestNet1 => testnet3DK
+ TestNet2 => testnetNefty
+ ```
 
  ## Examples
  ### Getting assets available for trading on the exchange
@@ -22,7 +33,7 @@
 async Task GettingAllTheAssets()
 {
     // Initialize the v1 assets API
-    var assetsApi = AtomicAssetsApiFactory.Version1.AssetsApi;
+    var assetsApi = AtomicAssetsApiFactory.MainNet1.AssetsApi;
 
     //Getting all the assets that are available for trading on the exchange.
     var assets = await assetsApi.Assets();
@@ -39,20 +50,34 @@ async Task GettingAllTheAssets()
 async Task GettingFilteredAssetsList()
 {
     // Initialize the v1 assets API
-    var assetsApi = AtomicAssetsApiFactory.Version1.AssetsApi;
+    var assetsApi = AtomicAssetsApiFactory.MainNet1.AssetsApi;
 
     // Build up the AssetsParameters with the AssetsUriParameterBuilder
     // This can be used to fine tune the kind of results we want
-    // For example, here were limiting the results to just five assets
-    // More information can be found on the documentation
-    var builder = new AssetsUriParameterBuilder().WithLimit(5);
+    var builder = new AssetsUriParameterBuilder()
+        .WithLimit(5)
+        .WithImmutableProperty("rarity","rare")
+        .WithOwner("username")
+        .WithCollectionName("mycollection")
+        .WithSchemaName("myschema")
+        .WithTemplateId(123456);
 
-    //Getting all the assets that are available for trading on the exchange.
+    // Getting all the assets that match the filters from the builder.
     var assets = await assetsApi.Assets(builder);
 
     // Print their IDs on the console.
     assets.Data.ToList().ForEach(a => Console.WriteLine(a.AssetId));
+
+    // If you want to log your query for debugging the builder
+    Debug.Log($"Query Parameters: {builder.Build()}");
+
 }
+
+ ```
+ 
+ ### Getting a single asset directly by its atomicasset id
+ ```csharp
+var asset = assetsApi.Asset(1099553597937);
 
  ```
  
@@ -71,18 +96,3 @@ async Task GetOffer(string offerId)
     // Access different informations about the offer using the Data property in the result
     Console.WriteLine(sales.Data.SenderName);
 }
-
- ```
- ### Unity Examples
- 
- Our unity packages come with examples to help you get started as quickly as possible.
- 
- An example showing the result for searching an Asset with ID "#1099849109724"
- 
-<img width="853" alt="image" src="https://user-images.githubusercontent.com/31707324/213101482-0371d6cb-4981-4ea5-af0d-688092087b67.png">
-
-An example showing the result for searching a Collection with Name "mrpotatogame"
-
-<img width="847" alt="image" src="https://user-images.githubusercontent.com/31707324/213101918-98ef30b5-d1ca-4b31-b4c7-2895a3681e89.png">
-
-
