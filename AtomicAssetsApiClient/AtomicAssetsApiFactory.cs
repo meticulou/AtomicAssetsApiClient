@@ -13,12 +13,20 @@ namespace AtomicAssetsApiClient
     public class AtomicAssetsApiFactory
     {
         private readonly string _baseUrl;
-        private const string Version1BaseUrl = "https://wax.api.atomicassets.io/atomicassets/v1";
+        private const string AtomicAssetsIO = "https://wax.api.atomicassets.io/atomicassets/v1";
+        private const string EOSAmsterdam = "https://wax-aa.eu.eosamsterdam.net/atomicassets/v1";
+        private const string EOSAuthority = "https://aa-api-wax.eosauthority.com/atomicassets/v1";
+        private const string testnet3DK = "https://testatomic.3dkrender.com/atomicassets/v1";
+        private const string testnetNefty = "https://aa-testnet-public.neftyblocks.com/atomicassets/v1";
 
         private AtomicAssetsApiFactory(string baseUrl) => _baseUrl = baseUrl;
 
         /* It's a static property that returns a new instance of the AtomicAssetsApiFactory class. */
-        public static AtomicAssetsApiFactory Version1 => new AtomicAssetsApiFactory(Version1BaseUrl);
+        public static AtomicAssetsApiFactory MainNet1 => new AtomicAssetsApiFactory(AtomicAssetsIO);
+        public static AtomicAssetsApiFactory MainNet2 => new AtomicAssetsApiFactory(EOSAmsterdam);
+        public static AtomicAssetsApiFactory MainNet3 => new AtomicAssetsApiFactory(EOSAuthority);
+        public static AtomicAssetsApiFactory TestNet1 => new AtomicAssetsApiFactory(testnet3DK);
+        public static AtomicAssetsApiFactory TestNet2 => new AtomicAssetsApiFactory(testnetNefty);
  
         /// <summary>
         /// The AccountsApi function returns a new AccountsApi object, which is a class that inherits
