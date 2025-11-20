@@ -14,9 +14,6 @@ namespace AtomicAssetsApiClient.Assets
         /* A private variable that is used to store the value of the schemaName parameter. */
         private string _schemaName;
 
-        /* A nullable boolean specfying the templateId. */
-        private int? _templateId;
-
         /* A private variable that is used to store the value of the match parameter. */
         private string _match;
 
@@ -65,6 +62,8 @@ namespace AtomicAssetsApiClient.Assets
         /* A list that stores immutable properties as key value pairs */
         private readonly List<KeyValuePair<string, string>> _immutableProperties = new List<KeyValuePair<string, string>>();
 
+        /* A list that stores template ids, so you can specify more than 1 template in a query (AND) */
+        private readonly List<int> _templateIds = new List<int>();
 
         /// <summary>
         /// `WithImmutableProperty` adds a key value pair to the immutable properties list
@@ -126,7 +125,7 @@ namespace AtomicAssetsApiClient.Assets
         }
 
         /// <summary>
-        /// `WithTemplateId` sets the `_templateId` variable to the value of the `templateId` parameter
+        /// `WithTemplateId` adds templateId to `_templateIds` list
         /// </summary>
         /// <param name="templateId">The templateId of the results to return.</param>
         /// <returns>
@@ -134,7 +133,7 @@ namespace AtomicAssetsApiClient.Assets
         /// </returns>
         public AssetsUriParameterBuilder WithTemplateId(int templateId)
         {
-            _templateId = templateId;
+            _templateIds.Add(templateId);
             return this;
         }
 
@@ -371,9 +370,9 @@ namespace AtomicAssetsApiClient.Assets
                 parameterString.Append($"&collection_name={_collectionName}");
             }
 
-            if (_templateId.HasValue)
+            foreach (var id in _templateIds)
             {
-                parameterString.Append($"&template_id={_templateId}");
+                parameterString.Append($"&template_id={id}");
             }
 
             if (!string.IsNullOrEmpty(_match))
