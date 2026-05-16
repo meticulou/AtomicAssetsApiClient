@@ -141,18 +141,7 @@ namespace AtomicAssetsApiClient.Assets
 
                 [JsonProperty("immutable_data")]
                 //! The immutable Data 
-                public ImmutableDataDto ImmutableData { get; set; }
-
-                public class ImmutableDataDto
-                {
-                    [JsonProperty("img")]
-                    //! The IPFS-CID of the Image 
-                    public string Image { get; set; }
-
-                    [JsonProperty("name")]
-                    //! The Name 
-                    public string Name { get; set; }
-                }
+                public object ImmutableData { get; set; }
             }
 
             public class SchemaDto
